@@ -1,0 +1,6 @@
+{
+  "name": "NutriAI Precision",
+  "description": "Calorie Intelligence Command Center, AI Meal Planner, Smart Dining & Metabolic Calibration",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

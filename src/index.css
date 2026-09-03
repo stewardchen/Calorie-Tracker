@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #fdfcf8;
+  --ink: #1a1a1a;
+  --accent: #ff3d00;
+  --dots: radial-gradient(#1a1a1a 1px, transparent 1px);
+}
+
+body {
+  background-color: #fdfcf8;
+  color: #1a1a1a;
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+  margin: 0;
+  min-height: 100vh;
+}
+
+.font-serif {
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+.font-mono {
+  font-family: 'Space Mono', monospace;
+}
+
+.v-text {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+}
+
+.bg-pattern {
+  background-image: var(--dots);
+  background-size: 20px 20px;
+}
+
+.outline-text {
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(26, 26, 26, 0.12);
+}
+
+/* Custom scrollbar for brutalist aesthetic */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f5f2eb;
+}
+::-webkit-scrollbar-thumb {
+  background: #1a1a1a;
+}
