@@ -231,9 +231,9 @@ export default function App() {
           />
         )}
 
-        {activeTab === 'talk' && (
-          <TalkToUs />
-        )}
+        <div style={{ display: activeTab === 'talk' ? 'block' : 'none' }}>
+          <TalkToUs isActive={activeTab === 'talk'} />
+        </div>
       </main>
 
       {/* Optical Spectrometry & Quick Scan Modal */}

@@ -1,41 +1,54 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 
-export const TalkToUs: React.FC = () => {
+interface TalkToUsProps {
+  isActive?: boolean;
+}
+
+export const TalkToUs: React.FC<TalkToUsProps> = ({ isActive = true }) => {
   const [canonicalUrl, setCanonicalUrl] = useState('');
+  const initializedRef = useRef(false);
 
+  // Real fixed canonical configuration values for Disqus (no hash fragments)
   const PAGE_IDENTIFIER = 'nutriai-talk-to-us';
+  const PAGE_URL = typeof window !== 'undefined' && window.location.origin
+    ? `${window.location.origin}/talk-to-us`
+    : 'https://nutriai-lab.disqus.com/talk-to-us';
 
   useEffect(() => {
-    // Determine the fixed canonical URL for the Talk to Us view
-    const origin = typeof window !== 'undefined' && window.location.origin
-      ? window.location.origin
-      : 'https://nutriai-lab.disqus.com';
-    const pageUrl = `${origin}/#talk`;
-    setCanonicalUrl(pageUrl);
+    setCanonicalUrl(PAGE_URL);
+  }, [PAGE_URL]);
 
-    // Disqus Universal Code SPA Configuration & Reload Handler
-    if (typeof window !== 'undefined') {
-      const win = window as any;
+  useEffect(() => {
+    if (!isActive || typeof window === 'undefined') return;
 
-      if (win.DISQUS) {
-        // When switching back to this tab in SPA, reload thread with real fixed config
-        win.DISQUS.reset({
-          reload: true,
-          config: function (this: any) {
-            this.page.url = pageUrl;
-            this.page.identifier = PAGE_IDENTIFIER;
-            this.page.title = 'Talk to Us // NutriAI Precision Community & Feedback';
-          },
-        });
-      } else {
-        // First load initialization
+    const win = window as any;
+
+    const configureDisqus = () => {
+      // If DISQUS is already loaded in window, reload the thread via DISQUS.reset for SPA navigation
+      if (win.DISQUS && typeof win.DISQUS.reset === 'function') {
+        try {
+          win.DISQUS.reset({
+            reload: true,
+            config: function (this: any) {
+              this.page.url = PAGE_URL;
+              this.page.identifier = PAGE_IDENTIFIER;
+              this.page.title = 'Talk to Us // NutriAI Precision Community & Feedback';
+            },
+          });
+        } catch (err) {
+          console.warn('Disqus reset error:', err);
+        }
+      } else if (!initializedRef.current) {
+        initializedRef.current = true;
+
+        // First-time load: define disqus_config as specified in Disqus universal code
         win.disqus_config = function (this: any) {
-          this.page.url = pageUrl;
+          this.page.url = PAGE_URL;
           this.page.identifier = PAGE_IDENTIFIER;
           this.page.title = 'Talk to Us // NutriAI Precision Community & Feedback';
         };
 
-        // Inject Disqus embed script if not already in document
+        // Inject the Disqus embed script if not already in document
         if (!document.getElementById('dsq-embed-scr')) {
           const d = document;
           const s = d.createElement('script');
@@ -45,8 +58,12 @@ export const TalkToUs: React.FC = () => {
           (d.head || d.body).appendChild(s);
         }
       }
-    }
-  }, []);
+    };
+
+    // Small delay ensures the DOM container is painted and ready
+    const timer = setTimeout(configureDisqus, 60);
+    return () => clearTimeout(timer);
+  }, [isActive, PAGE_URL, PAGE_IDENTIFIER]);
 
   return (
     <div className="space-y-8 animate-fadeIn">
