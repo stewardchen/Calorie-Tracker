@@ -1,4 +1,4 @@
-export type ActiveTab = 'command' | 'planner' | 'dining' | 'calibration' | 'discussion';
+export type ActiveTab = 'command' | 'planner' | 'dining' | 'calibration';
 
 export interface MacroBreakdown {
   protein: number;

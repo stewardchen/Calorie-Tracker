@@ -2,7 +2,7 @@
  * @license
  * SPDX-License-Identifier: Apache-2.0
  */
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { ActiveTab, NutritionTargets, TimelineMeal, MealProposal, MacroBreakdown, BiometricProfile } from './types';
 import { initialNutritionTargets, initialTimelineMeals, initialMealProposals, initialDiningVenues, initialBiometrics } from './data/mockData';
 import { Header } from './components/Header';
@@ -10,7 +10,6 @@ import { CommandCenter } from './components/CommandCenter';
 import { MealPlanner } from './components/MealPlanner';
 import { SmartDining } from './components/SmartDining';
 import { BiometricsCalibration } from './components/BiometricsCalibration';
-import { DiscussionForum } from './components/DiscussionForum';
 import { ScanModal } from './components/ScanModal';
 import { Footer } from './components/Footer';
 
@@ -22,29 +21,6 @@ export default function App() {
   const [venues] = useState(initialDiningVenues);
   const [biometrics, setBiometrics] = useState<BiometricProfile>(initialBiometrics);
   const [isScanModalOpen, setIsScanModalOpen] = useState(false);
-
-  // Sync active tab with URL hash
-  useEffect(() => {
-    const handleHashChange = () => {
-      const hash = window.location.hash.replace('#', '').toLowerCase();
-      if (hash === 'discussion' || hash === 'disqus' || hash === 'forum') {
-        setActiveTab('discussion');
-      } else if (hash === 'command' || hash === 'planner' || hash === 'dining' || hash === 'calibration') {
-        setActiveTab(hash as ActiveTab);
-      }
-    };
-
-    handleHashChange();
-    window.addEventListener('hashchange', handleHashChange);
-    return () => window.removeEventListener('hashchange', handleHashChange);
-  }, []);
-
-  const handleTabChange = (tab: ActiveTab) => {
-    setActiveTab(tab);
-    if (typeof window !== 'undefined') {
-      window.location.hash = tab;
-    }
-  };
 
   // Toggle Adaptive Re-feed Protocol (+350 kcal)
   const handleToggleRefeed = () => {
@@ -186,7 +162,7 @@ export default function App() {
       {/* Header */}
       <Header
         activeTab={activeTab}
-        setActiveTab={handleTabChange}
+        setActiveTab={setActiveTab}
         remainingCalories={targets.remainingCalories}
         refeedActive={targets.refeedActive}
         onOpenScanModal={() => setIsScanModalOpen(true)}
@@ -202,7 +178,7 @@ export default function App() {
             onOpenScanModal={() => setIsScanModalOpen(true)}
             onQuickAddMeal={handleQuickAddMeal}
             onDeleteMeal={handleDeleteMeal}
-            onNavigateTab={handleTabChange}
+            onNavigateTab={setActiveTab}
           />
         )}
 
@@ -229,10 +205,6 @@ export default function App() {
             onUpdateProfile={handleUpdateProfile}
             onRecalibrate={handleRecalibrate}
           />
-        )}
-
-        {activeTab === 'discussion' && (
-          <DiscussionForum />
         )}
       </main>
 

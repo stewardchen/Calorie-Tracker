@@ -27,9 +27,7 @@ export const Footer: React.FC = () => {
           <div className="flex items-center gap-4 font-sans text-[10px] uppercase tracking-widest text-[#1a1a1a]/50">
             <span>Client-Side Privacy Enforced</span>
             <span>•</span>
-            <a href="#discussion" className="text-[#ff3d00] hover:underline font-bold">
-              Disqus Forum (zh_TW)
-            </a>
+            <span>Zero Unrequested Tracking</span>
             <span>•</span>
             <span>99.4% Macro Precision</span>
           </div>
